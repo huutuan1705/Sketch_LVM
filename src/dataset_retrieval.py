@@ -57,12 +57,9 @@ class Sketchy(torch.utils.data.Dataset):
         self.all_photos_path = {}
 
         for category in self.all_categories:
-            self.all_sketches_path.extend(glob.glob(os.path.join(self.opts.data_dir, 'sketch', category, '*.png')))
-            self.all_photos_path[category] = glob.glob(os.path.join(self.opts.data_dir, 'photo', category, '*.jpg'))
+            self.all_sketches_path.extend(glob.glob(os.path.join(self.opts.data_dir, 'sketch', category, '*')))
+            self.all_photos_path[category] = glob.glob(os.path.join(self.opts.data_dir, 'photo', category, '*'))
 
-        self.all_photos_path = {
-            k: v for k, v in self.all_photos_path.items() if len(v) > 0
-        }
     def __len__(self):
         return len(self.all_sketches_path)
         
@@ -70,12 +67,12 @@ class Sketchy(torch.utils.data.Dataset):
         filepath = self.all_sketches_path[index]                
         category = filepath.split(os.path.sep)[-2]
         filename = os.path.basename(filepath)
-        img_path = np.random.choice(self.all_photos_path[category])
         
         neg_classes = self.all_categories.copy()
         neg_classes.remove(category)
 
         sk_path  = filepath
+        img_path = np.random.choice(self.all_photos_path[category])
         neg_path = np.random.choice(self.all_photos_path[np.random.choice(neg_classes)])
 
         sk_data  = ImageOps.pad(Image.open(sk_path).convert('RGB'),  size=(self.opts.max_size, self.opts.max_size))

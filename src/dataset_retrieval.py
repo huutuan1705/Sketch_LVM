@@ -145,7 +145,7 @@ class ValidDataset(torch.utils.data.Dataset):
         image = ImageOps.pad(Image.open(filepath).convert('RGB'),  size=(self.args.max_size, self.args.max_size))
         image_tensor = self.transform(image)
         
-        return image_tensor, self.global_categories.index(category)
+        return image_tensor, visualize_classes.index(category)
     
     def __len__(self):
         return len(self.paths)

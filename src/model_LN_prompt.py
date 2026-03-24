@@ -75,7 +75,7 @@ class Model(pl.LightningModule):
             self.val_step_outputs_ph.append((feat, label))
         
 
-    def validation_epoch_end(self):
+    def on_validation_epoch_end(self):
         query_len = len(self.val_step_outputs_sk)
         gallery_len = len(self.val_step_outputs_ph)
         

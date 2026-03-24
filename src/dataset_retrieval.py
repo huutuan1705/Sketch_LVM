@@ -122,9 +122,9 @@ class ValidDataset(torch.utils.data.Dataset):
         unseen_paths = []
         for category in unseen_classes:
             if self.mode == 'photo':
-                unseen_paths.extend(glob.glob(os.path.join(self.args.root, 'photo', category, '*')))
+                unseen_paths.extend(glob.glob(os.path.join(self.args.data_dir, 'photo', category, '*')))
             else:
-                unseen_paths.extend(glob.glob(os.path.join(self.args.root, 'sketch', category, '*')))
+                unseen_paths.extend(glob.glob(os.path.join(self.args.data_dir, 'sketch', category, '*')))
 
         self.paths = list(unseen_paths)
             

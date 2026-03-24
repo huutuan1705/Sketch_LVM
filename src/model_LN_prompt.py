@@ -87,24 +87,41 @@ class Model(pl.LightningModule):
 
     def on_validation_epoch_end(self):
         
-        X, y = [], []
-        for cls, data in self.saved_features.items():
-            if len(data["sketch"]) == 0:
-                continue
-            X.append(torch.stack(data["sketch"]).detach().cpu().numpy())
-            y += [cls] * len(data["sketch"])
+        visualize_classes = [
+            "dolphin",
+            "helicopter",
+            "saw",
+            "songbird",
+            "sword",
+            "windmill",
+        ]
 
-        X = np.concatenate(X, axis=0)
-        Z = TSNE(n_components=2, random_state=42, perplexity=min(30, len(X) - 1)).fit_transform(X)
+        X = np.concatenate([torch.stack(v["sketch"]).cpu().numpy()
+                            for v in self.saved_features.values() if len(v["sketch"]) > 0], axis=0)
+        y = sum([[k] * len(v["sketch"])
+                for k, v in self.saved_features.items() if len(v["sketch"]) > 0], [])
+
+        Z = TSNE(n_components=2, random_state=42, perplexity=min(30, len(X)-1)).fit_transform(X)
 
         plt.figure(figsize=(8, 6))
         for cls in sorted(set(y)):
-            idx = [i for i, c in enumerate(y) if c == cls]
-            plt.scatter(Z[idx, 0], Z[idx, 1], s=10, label=str(cls))
+            idx = [i for i, t in enumerate(y) if t == cls]
+            plt.scatter(
+                Z[idx, 0], Z[idx, 1],
+                s=20,
+                marker="^",                  # tam giác
+                label=visualize_classes[int(cls)]   # đổi số -> chữ
+            )
 
-        plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+        ax = plt.gca()
+        ax.set_xticks([])   # bỏ trục tọa độ
+        ax.set_yticks([])
+        for spine in ax.spines.values():   # bỏ đường viền
+            spine.set_visible(False)
+
+        plt.legend(frameon=False)
         plt.tight_layout()
-        plt.savefig("tsne_sketch.png", dpi=300)
+        plt.savefig("tsne_sketch.png", dpi=300, bbox_inches="tight", pad_inches=0)
         plt.close()
         
         

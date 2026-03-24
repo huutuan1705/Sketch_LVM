@@ -76,6 +76,7 @@ class Model(pl.LightningModule):
         
 
     def on_validation_epoch_end(self):
+        distance_fn = lambda x, y: F.cosine_similarity(x, y)
         query_len = len(self.val_step_outputs_sk)
         gallery_len = len(self.val_step_outputs_ph)
         
@@ -94,7 +95,7 @@ class Model(pl.LightningModule):
                 
         for idx, sk_feat in enumerate(query_feat_all):
             category = all_sketch_category[idx]
-            distance = self.distance_fn(sk_feat.unsqueeze(0), gallery)
+            distance = distance_fn(sk_feat.unsqueeze(0), gallery)
             target = torch.zeros(len(gallery), dtype=torch.bool, device=device)
             target[np.where(all_photo_category == category)] = True
             

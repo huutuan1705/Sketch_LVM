@@ -46,9 +46,7 @@ class Model(pl.LightningModule):
         self.saved_features = defaultdict(lambda: {"sketch": [], "photo": []})
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam([
-            {'params': self.clip.parameters(), 'lr': self.opts.clip_LN_lr},
-            ])
+        optimizer = torch.optim.Adam(params=self.clip.parameters(), lr=1e-4)
             # {'params': [self.sk_prompt] + [self.img_prompt], 'lr': self.opts.prompt_lr}])
         return optimizer
 

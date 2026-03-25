@@ -89,6 +89,30 @@ class Model(pl.LightningModule):
 
     def on_validation_epoch_end(self):
         
+        unseen_classes = [
+            "bat",
+            "cabin",
+            "cow",
+            "dolphin",
+            "door",
+            "giraffe",
+            "helicopter",
+            "mouse",
+            "pear",
+            "raccoon",
+            "rhinoceros",
+            "saw",
+            "scissors",
+            "seagull",
+            "skyscraper",
+            "songbird",
+            "sword",
+            "tree",
+            "wheelchair",
+            "windmill",
+            "window",
+        ]
+                
         visualize_classes = [
             "cow",
             "raccoon",
@@ -101,8 +125,8 @@ class Model(pl.LightningModule):
             "saw",
             "sword",
         ]
-        visualize_tsne(visualize_classes, self.saved_features, mode="photo")
-        visualize_tsne(visualize_classes, self.saved_features, mode="sketch")
+        visualize_tsne(unseen_classes, self.saved_features, mode="photo")
+        visualize_tsne(unseen_classes, self.saved_features, mode="sketch")
         
         # distance_fn = lambda x, y: F.cosine_similarity(x, y)
         # query_len = len(self.val_step_outputs_sk)

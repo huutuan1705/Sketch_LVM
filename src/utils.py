@@ -7,7 +7,7 @@ def visualize_tsne(visualize_classes, saved_features, mode="photo"):
     label_to_color = {
         "cow": "#E2514A",
         "raccoon": "#F5AA53",
-        "scissors": "#F3D97B",
+        "scissors": "#FCE283",
         "seagull": "#EAF890",
         "sword": "#8ACA8F",
         "tree": "#4DA3B5",

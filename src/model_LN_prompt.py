@@ -32,8 +32,8 @@ class Model(pl.LightningModule):
         self.clip.apply(freeze_model)
 
         # Prompt Engineering
-        # self.sk_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
-        # self.img_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
+        self.sk_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
+        self.img_prompt = nn.Parameter(torch.randn(self.opts.n_prompts, self.opts.prompt_dim))
 
         self.distance_fn = lambda x, y: 1.0 - F.cosine_similarity(x, y)
         self.loss_fn = nn.TripletMarginWithDistanceLoss(
@@ -46,9 +46,10 @@ class Model(pl.LightningModule):
         self.saved_features = defaultdict(lambda: {"sketch": [], "photo": []})
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(params=self.clip.parameters(), lr=1e-4)
-            # {'params': [self.sk_prompt] + [self.img_prompt], 'lr': self.opts.prompt_lr}])
-        return optimizer
+        optimizer = torch.optim.Adam([
+            {'params': self.clip.parameters(), 'lr': self.opts.clip_LN_lr},
+            {'params': [self.sk_prompt] + [self.img_prompt], 'lr': self.opts.prompt_lr}])
+        # return optimizer
 
     def forward(self, data, dtype='image'):
         if dtype == 'image':
